@@ -1,0 +1,49 @@
+SCD41: no new data available
+air pressure: 1001.04 hPa , temp: 25.2
+ALS Reading: 2772 lux
+SCD41: CO2: 752 (ppm), temperature: 26.13 C, humidity: 49.87 %
+air pressure: 1001.01 hPa , temp: 25.2
+ALS Reading: 2772 lux
+SCD41: no new data available
+air pressure: 1001.13 hPa , temp: 25.2
+ALS Reading: 2767 lux
+SCD41: no new data available
+air pressure: 1001.13 hPa , temp: 25.2
+ALS Reading: 2767 lux
+SCD41: no new data available
+air pressure: 1001.02 hPa , temp: 25.2
+ALS Reading: 2767 lux
+SCD41: no new data available
+air pressure: 1001.12 hPa , temp: 25.2
+ALS Reading: 2772 lux
+SCD41: CO2: 751 (ppm), temperature: 26.12 C, humidity: 49.97 %
+air pressure: 1001.1 hPa , temp: 25.2
+ALS Reading: 2767 lux
+SCD41: no new data available
+air pressure: 1001.08 hPa , temp: 25.1
+ALS Reading: 2768 lux
+SCD41: no new data available
+air pressure: 1001.05 hPa , temp: 25.1
+ALS Reading: 2768 lux
+SCD41: no new data available
+air pressure: 1001.02 hPa , temp: 25.1
+ALS Reading: 2772 lux
+SCD41: CO2: 748 (ppm), temperature: 26.10 C, humidity: 50.01 %
+air pressure: 1001.1 hPa , temp: 25.2
+ALS Reading: 2773 lux
+SCD41: no new data available
+air pressure: 1001.08 hPa , temp: 25.2
+ALS Reading: 2768 lux
+SCD41: no new data available
+air pressure: 1001.07 hPa , temp: 25.2
+ALS Reading: 2768 lux
+SCD41: no new data available
+air pressure: 1001.04 hPa , temp: 25.2
+ALS Reading: 2768 lux
+SCD41: no new data available
+air pressure: 1001.05 hPa , temp: 25.2
+ALS Reading: 2774 lux
+SCD41: CO2: 748 (ppm), temperature: 26.08 C, humidity: 50.05 %
+air pressure: 1001.18 hPa , temp: 25.2
+ALS Reading: 2768 lux
+SCD41: no new data available
