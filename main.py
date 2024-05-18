@@ -29,33 +29,33 @@ RPR_ADDR = 0x38
 def bmp180_read_coefficients(bus)-> Bytes:
     bmp180_coef_reg_base = b'\xaa'
     bmp180_coef_size = 22
-    
+
     bus.writeto(bmp180_i2c_addr, bmp180_coef_reg_base, False)
     coefs = bus.readfrom(bmp180_i2c_addr, bmp180_coef_size)
-    
+
     #print(f"bmp coefficients: {coefs=}")
     return coefs
 
 def bmp180_perform_measurement(bus, command: Bytes, ms: int) -> Bytes :
     bmp180_reg_out_msb = b'\xf6'
-    
+
     bus.writeto(bmp180_i2c_addr, command, True)
     time.sleep_ms(ms)
-    
+
     bus.writeto(bmp180_i2c_addr, bmp180_reg_out_msb, False)
     out = bus.readfrom(bmp180_i2c_addr, 3)
-    
+
     #print(f"raw output: {[hex(x) for x in out]}")
-    return out    
+    return out
 
 def bmp180_read_temperature(bus)->int:
     bmp180_cmd_meas_temp = b'\xf4\x2e'
-    
+
     return bmp180_perform_measurement(bus, bmp180_cmd_meas_temp, 5)
 
 def bmp180_read_pressure(bus)->int:
     bmp180_cmd_meas_temp = b'\xf4\xf4'
-    
+
     return bmp180_perform_measurement(bus, bmp180_cmd_meas_temp, 26)
 
 def compute(coef, raw_temp, raw_press):
@@ -64,7 +64,7 @@ def compute(coef, raw_temp, raw_press):
     oss = 3
     UP = raw_press[0] << 16 | raw_press[1] << 8 | raw_press[2]
     UP = UP >> (8 - oss)
-    
+
     AC1 = struct.unpack_from(">h", coef)[0]
     AC2 = struct.unpack_from(">h", coef, 2)[0]
     AC3 = struct.unpack_from(">h", coef, 4)[0]
@@ -76,7 +76,7 @@ def compute(coef, raw_temp, raw_press):
     MB = struct.unpack_from(">h", coef, 16)[0]
     MC = struct.unpack_from(">h", coef, 18)[0]
     MD = struct.unpack_from(">h", coef, 20)[0]
-    
+
     #print(f"{UT=}, {UP=}")
     #print(f"{AC1=}, {AC2=}, {AC3=}, {AC4=}, {AC5=}, {AC6=}")
     #print(f"{B1=}, {B2=}, {MB=}, {MC=}, {MD=}")
@@ -87,8 +87,8 @@ def compute(coef, raw_temp, raw_press):
     B5 = X1 + X2
     T = (B5 + 8) // 0x0010
     #T is in 0.1C units
-    
-    
+
+
     #compute pressure
     B6 = B5 - 4000
     X1 = (B2 * (B6 * B6 // (1 << 12))) // (1 < 11)
@@ -98,7 +98,7 @@ def compute(coef, raw_temp, raw_press):
     X1 = AC3 * B6 // (1 << 13)
     X2 = (B1 * (B6 * B6 // (1 << 12))) // (1 << 16)
     X3 = ((X1 + X2) + 2) // 4
-    
+
     #unsigned longs here, check later
     B4 = AC4 * (X3 + 32768) // (1 << 15)
     B7 = (UP - B3) * (50000 >> 3)
@@ -111,23 +111,23 @@ def compute(coef, raw_temp, raw_press):
     X2 = (-7357 * p) // (1 << 16)
     p = p + (X1 + X2 + 3791) // 16
     #print(f"measured temperature: {T / 10} ")
-    print(f"air pressure: {p/100} hPa , temp: {T / 10}")
+    print(f"BMP180: air pressure: {p/100} hPa , temp: {T / 10} C")
 
 def scd41_stop_periodic_measurements():
     write_buf = bytearray([0x3f, 0x86])
     bus.writeto(SCD41_i2c_addr, write_buf)
-    time.sleep(1) 
+    time.sleep(1)
 
 def scd41_start_periodic_measurements():
     write_buf = bytearray([0x21, 0xb1])
     bus.writeto(SCD41_i2c_addr, write_buf)
-    time.sleep(1) 
+    time.sleep(1)
 
 def scd41_get_data_ready_status():
     write_buf = bytearray([0xe4, 0xb8])
     bus.writeto(SCD41_i2c_addr, write_buf)
     read_buf = bus.readfrom(SCD41_i2c_addr, 3)
-    
+
     answer = int.from_bytes(read_buf[:2], 'big')
     return (answer & 0x07ff) != 0
 
@@ -182,13 +182,13 @@ def scd41_poll():
 
 def scd41_init():
     scd41_stop_periodic_measurements()
-    time.sleep(1)  
+    time.sleep(1)
     scd41_start_periodic_measurements()
     print("SCD41: initialization finished")
 
 def rpr_SYSTEM_CONTROL():
     bus.writeto(RPR_ADDR, bytes([0x40, 0x80]))
-    
+
 def rpr_MODE_CONTROL():
     bus.writeto(RPR_ADDR, bytes([0x41, 0x8a]))
 
@@ -206,7 +206,7 @@ def READ_ALS_DATA():
 def rpr_main():
     # 光センサーからデータを読み取る
     als_value = READ_ALS_DATA()
-    print("ALS Reading: {} lux".format(als_value))
+    print("RPR-0521RS: ALS Reading: {} lx".format(als_value))
 
 
 
@@ -219,7 +219,9 @@ scd41_init()
 coef = bmp180_read_coefficients(bus)
 
 while True:
-    time.sleep(1)  
+    for i in range(15, 0, -1):
+        print(i)
+        time.sleep(1)
     scd41_poll()
     raw_temp = bmp180_read_temperature(bus)
     raw_press = bmp180_read_pressure(bus)
